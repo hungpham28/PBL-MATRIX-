@@ -9,28 +9,28 @@ typedef struct Vector{
 	double e[100];
 	int size;
 }vector;
-int getData(matrix* A, vector* B)//nhap ma tran
-{	
+int getData(matrix* A, vector* B)//Đọc dữ liệu từ file
+{
 	char path[100];
 	printf("Enter file name: ");
-	scanf("%s",&path);
-	FILE* f=fopen(path,"r");
-	if (f!=NULL){
+	scanf("%s",&path);//nhập tên file cần nhập
+	FILE* f=fopen(path,"r");//mở file để đọc
+	if (f!=NULL){//nếu tìm thấy file sẽ tiếp tục ngược lại trả về 0
 		char c;
-		A->size=0;   B->size=0;
-		fscanf(f,"%d",&(A->size));
+		A->size=0;   B->size=0; // khỏi tạo kích thước ma trận và vector về 0
+		fscanf(f,"%d",&(A->size));// đọc kí tự đầu tiên là kích thước ma trận và veotor
 		B->size=A->size;
-		if(A->size!=0){
+		if(A->size!=0){//nếu kích thước là 0 thì file nhập vào là rỗng
 			for (int i=0;i<A->size;i++)
 			{
 
-				for (int j=0;j<A->size;j++) 
-					if(fscanf(f,"%lf",&(A->e[i][j]))==EOF) { 
+				for (int j=0;j<A->size;j++) //nhập n kí tự đầu tiên dòng i cho ma trận A[i][j]
+					if(fscanf(f,"%lf",&(A->e[i][j]))==EOF) { //nếu như không tìm thấy kí tự nhập vào thì dữ liệu sai
 						printf("Invalid %s file data!\n(Please enter again file data)\n",path);
 						fclose(f);
 						return 0;
 					}
-				if(fscanf(f,"%lf",&(B->e[i]))==EOF) { 
+				if(fscanf(f,"%lf",&(B->e[i]))==EOF) { //nhập phần tử n+1 cho vector B[i], nếu như không tìm thấy kí tự nhập vào thì dữ liệu sai
 						printf("Invalid %s file data!\n(Please enter again file data)\n",path);
 						fclose(f);
 						return 0;
@@ -38,13 +38,13 @@ int getData(matrix* A, vector* B)//nhap ma tran
 			}
 			printf("Read file %s successfully!\n",path);
 		}
-		else{
+		else{//file nhập vào là file rỗng lỗi đọc file trả về 0
 			printf("The file %s is empty!\n",path);
 			printf("**********************************************************\n");
 			fclose(f);return 0;
 		}
 	}
-	else {
+	else {//Không tìm thấy file trả về 0
 		printf("File %s not found!\n",path);
 		printf("**********************************************************\n");
 		fclose(f);return 0;
@@ -52,23 +52,9 @@ int getData(matrix* A, vector* B)//nhap ma tran
 	printf("**********************************************************\n");
 	fclose(f);
 
-	return 1;
+	return 1;//Đọc file thành công trả về 1
 }
-void writeMatrix(matrix M){
-	char path[100];
-	printf("Enter file name: ");
-	scanf("%s",&path);
-	FILE* f=fopen(path,"a");
-	printf("Write file %s successfully!\n",path);
-	fprintf(f,"Square matrix %dx%d\n",M.size,M.size);
-	for (int i=0;i<M.size;i++){
-		for (int j=0;j<M.size;j++)  
-			fprintf(f,"%3.1d ",M.e[i][j]);	
-		fprintf(f,"\n");	
-	}
-	printf("**********************************************************\n");
-	fclose(f);
-}
+
 void writeSolution(matrix A,vector X,vector B){
 	char path[100];
 	printf("Enter file name: ");
@@ -77,10 +63,10 @@ void writeSolution(matrix A,vector X,vector B){
 	fprintf(f,"\n");
 	printf("Write file %s successfully!\n",path);
 	for (int i=0;i<A.size;i++){
-		for (int j=0;j<A.size;j++)  
+		for (int j=0;j<A.size;j++)
 			fprintf(f,"%8.3lf ",A.e[i][j]);
-		fprintf(f,"%8.3lf ",B.e[i]);	
-		fprintf(f,"\n");	
+		fprintf(f,"%8.3lf ",B.e[i]);
+		fprintf(f,"\n");
 	}
 	fprintf(f,"Solution of the system of linear equations X=( ");
 	for (int i=0;i<X.size-1;i++) fprintf(f,"%.3lf, ",X.e[i]);
@@ -95,7 +81,7 @@ void displayProblem(matrix A,vector B)//in ra ma tran
 		for (int j=0;j<A.size;j++)
 			printf("  %8.3lf",A.e[i][j]);
 		printf("  %8.3lf",B.e[i]);
-		printf("\n"); 
+		printf("\n");
 	}
 }
 void displayMatrix(matrix A)//in ra ma tran
@@ -104,7 +90,7 @@ void displayMatrix(matrix A)//in ra ma tran
 	{
 		for (int j=0;j<A.size;j++)
 			printf("  %8.3lf",A.e[i][j]);
-		printf("\n"); 
+		printf("\n");
 	}
 }
 void displayResult(vector X){
@@ -134,7 +120,7 @@ double det(matrix A)//tinh dinh thuc cua ma tran A la detA (|A|)
 			for (int k=i+1;k<A.size;k++)
 				if (A.e[k][i]!=0)//hoan vi 2 hang cua ma tran
 				{
-					for (int col=0;col<A.size;col++) 
+					for (int col=0;col<A.size;col++)
 						swap(&A.e[k][col],&A.e[i][col]);
 					j--;
 					detA*=-1;
@@ -165,13 +151,13 @@ vector solveByGauss(matrix A,vector B){
 			for (int k=i+1;k<A.size;k++)
 				if (A.e[k][i]!=0)//hoan vi 2 hang cua ma tran
 				{
-					for (int col=0;col<A.size;col++) 
+					for (int col=0;col<A.size;col++)
 						swap(&A.e[k][col],&A.e[i][col]);
 					swap(&B.e[k],&B.e[i]);
 					j--;
 					printf("Transformation:    R%d <----> R%d\n",i+1,k+1);
 					displayProblem(A,B);
-					printf("------------------------------------\n");
+					printf("\n");
 					break;
 				}
 		}
@@ -191,7 +177,7 @@ vector solveByGauss(matrix A,vector B){
 	}
 	return X;
 }
-vector Solution(matrix A,vector B){
+vector Solution(matrix A,vector B){//tương tự gauss dùng để tính thời gian
 	double k;   vector X;
 	X.size=B.size;
 	for (int i=0;i<A.size-1;i++)
@@ -208,7 +194,7 @@ vector Solution(matrix A,vector B){
 			for (int k=i+1;k<A.size;k++)
 				if (A.e[k][i]!=0)//hoan vi 2 hang cua ma tran
 				{
-					for (int col=0;col<A.size;col++) 
+					for (int col=0;col<A.size;col++)
 						swap(&A.e[k][col],&A.e[i][col]);
 					swap(&B.e[k],&B.e[i]);
 					j--;
@@ -231,9 +217,9 @@ vector Solution(matrix A,vector B){
 	}
 	return X;
 }
-vector Solution2(matrix A,vector B){
+vector Solution2(matrix A,vector B){//tương tự cramer dùng để tính thời gian
 	matrix M;   	 vector X;
-	M.size=A.size;   
+	M.size=A.size;
 	X.size=B.size;
 	double detM,detA=det(A);
 	if(detA!=0){
@@ -241,9 +227,9 @@ vector Solution2(matrix A,vector B){
 			for (int i=0;i<A.size;i++)
 			{
 				for (int j=0;j<k;j++) M.e[i][j]=A.e[i][j];
-				
+
 				for (int j=k+1;j<A.size;j++) M.e[i][j]=A.e[i][j];
-				
+
 				M.e[i][k]=B.e[i];
 			}
 			detM=det(M);
@@ -257,7 +243,7 @@ vector Solution2(matrix A,vector B){
 }
 vector solveByCrame(matrix A,vector B){
 	matrix M;   	 vector X;
-	M.size=A.size;   
+	M.size=A.size;
 	X.size=B.size;
 	double detM,detA=det(A);
 	printf("Matrix A:\n");
@@ -268,9 +254,9 @@ vector solveByCrame(matrix A,vector B){
 			for (int i=0;i<A.size;i++)
 			{
 				for (int j=0;j<k;j++) M.e[i][j]=A.e[i][j];
-				
+
 				for (int j=k+1;j<A.size;j++) M.e[i][j]=A.e[i][j];
-				
+
 				M.e[i][k]=B.e[i];
 			}
 			detM=det(M);
@@ -287,7 +273,7 @@ vector solveByCrame(matrix A,vector B){
 }
 
 int main()
-{	
+{
 	clock_t start, end;
 	int option,Data=0;
 	char ok;
@@ -315,7 +301,7 @@ int main()
 			case 2:
 				if(!Data)printf("Data is not available\n"),Data=getData(&A,&B);
 				if(!Data) break;
-				displayProblem(A,B); 
+				displayProblem(A,B);
 				break;
 			case 3:
 				if(!Data)printf("Data is not available\n"),Data=getData(&A,&B);
@@ -347,7 +333,7 @@ int main()
 				break;
 			case 7:
 				if(!Data)printf("Data is not available\n"),Data=getData(&A,&B);
-				
+
 				start=clock();
 				X=Solution(A,B);
 				end	=clock();
@@ -357,12 +343,12 @@ int main()
 				end	=clock();
 				printf("Ecution time of Crame: %lf\n",(double)(end-start)/CLOCKS_PER_SEC);
 				break;
-			case 8:			
+			case 8:
 				break;
 			default:printf("This function could not be found!\n");
 		}
 		if(option==8) break;
-		else 
+		else
 		printf("\nDo you want to continue?");
 		do{
 			printf("Yes or No enter (y/n): ");
